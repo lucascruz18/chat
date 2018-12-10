@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Chat</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <h1>Welcome !</h1>
+    <form id="chat">
+        <input type="text" name="username" placeholder="digite seu usuario">
+        <div class="messages"></div>
+        <input type="text" name="message" placeholder="digite seu usuario">
+        <button type="submit">Send</button>
+
+        <script type="text/javascript">
+
+            function typeWrite(elemento) {
+                const textArray = elemento.innerHTML.split('');
+                elemento.innerHTML = '';
+                textArray.forEach((letra, i) => {
+                    setTimeout(() => elemento.innerHTML += letra, 75 * i);
+                })
+            }
+
+            const titulo = document.querySelector('h1');
+            typeWrite(titulo);
+            
+            var socket = io('http://localhost:3000');
+
+            function renderMessage(message) {
+                $('.messages').append('<div class="message"><strong>' + message.author +'</strong>: ' +message.message+ '</div>')
+            }
+
+            socket.on('previousMessages', function(messages) {
+                for (message of messages) {
+                    renderMessage(message);
+                }
+            });
+
+            socket.on('receivedMessage', function(message){
+                renderMessage(message);
+            });
+
+            $('#chat').submit(function(event) {
+                event.preventDefault();
+
+                var author = $( 'input[name=username]' ).val();
+                var message = $( 'input[name=message]' ).val();
+                
+                if (author.length && message.length) {
+                    var messageObject = {
+                        author: author,
+                        message: message,
+                    };
+                    renderMessage(messageObject);
+                    socket.emit('sendMessage', messageObject);
+                }
+            });
+        </script>
+
+
+
+
+    </form>
+</body>
+</html>
