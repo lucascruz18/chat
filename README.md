@@ -1,5 +1,5 @@
 # chat
 
-Chat Simples Desenvolvido com Apoio da Rocketseat
+Chat Simples Desenvolvido com Conhecimentos Obtidos na Rocketseat
 
-Foi Utilizado Node Js com Socket.io
+Foi Utilizado Node.Js com Socket.io
